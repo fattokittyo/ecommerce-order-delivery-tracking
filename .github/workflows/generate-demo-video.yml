@@ -28,14 +28,25 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Generate demonstration from working app
         run: python scripts/render_demo_video.py
-      - name: Add video to repository
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Olist_DBMS_Demonstration_Video_GitHub.mp4
-          git diff --staged --quiet || (git commit -m "Add recorded DBMS app demonstration" && git push)
       - name: Keep downloadable video artifact
         uses: actions/upload-artifact@v4
         with:
           name: ecommerce-dbms-demonstration
           path: Olist_DBMS_Demonstration_Video_GitHub.mp4
+      - name: Commit video to latest branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git reset --hard origin/main
+            git add -f Olist_DBMS_Demonstration_Video_GitHub.mp4
+            if git diff --staged --quiet; then
+              echo "Video already committed"
+              exit 0
+            fi
+            git commit -m "Add narrated DBMS demonstration video"
+            if git push origin HEAD:main; then exit 0; fi
+            echo "Repository changed; retrying..."
+          done
+          exit 1
