@@ -1,4 +1,5 @@
 name: Publish student project dashboard
+# Re-trigger deployment after repository Pages activation
 on:
   push:
     branches: [main]
