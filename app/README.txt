@@ -1,0 +1,1 @@
+Run Python 3 (standard library only) with python server.py, then open http://127.0.0.1:8765 . This is a local SQLite database app. Don't expose it publicly. Historical Olist orders are in data/*.csv and new follow-ups are demo-only.
